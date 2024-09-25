@@ -1,6 +1,6 @@
 //import 라이브러리
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 //import 컴포넌트
 import Header from '../include/Header';
 import Footer from '../include/Footer';
@@ -10,16 +10,33 @@ import '../../assets/css/mysite.css';
 import profileImg from '../../assets/images/profile.jpg';
 const Main = () => {
     /*---상태관리 변수들(값이 변화면 화면 랜더링) ----------*/
-
+    const [token, setToken] = useState(localStorage.getItem('token'));
+    const [name, setName] = useState('');
+    const navigate = useNavigate();
     /*---일반 메소드 --------------------------------------------*/
 
     /*---생명주기 + 이벤트 관련 메소드 ----------------------*/
 
+    useEffect(() => {
+        const authUser = localStorage.getItem('authUser');
+        if (authUser) {
+            const parsedUser = JSON.parse(authUser);
+            setName(parsedUser.name);
+        }
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('authUser');
+        setToken(null);
+        setName('');
+        navigate('/'); // 로그아웃 후 메인으로 리다이렉트
+    };
 
     return (
         <>
             <div id="wrap">
-                <Header />
+                <Header token={token} name={name} handleLogout={handleLogout} />
 
                 <div id="container" className="clearfix">
                     {/* <!-- aside 없음 --> */}

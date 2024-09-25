@@ -1,5 +1,5 @@
 //import 라이브러리
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // React Router에서 URL 파라미터 추출 및 페이지 이동 기능 사용
 
 //import 컴포넌트
@@ -16,6 +16,24 @@ const LoginForm = () => {
     const navigate = useNavigate();
     const [id, setId] = useState('');
     const [password, setPw] = useState('');
+    const [token, setToken] = useState(localStorage.getItem("token"));  // 토큰 상태 관리
+       
+    const handleLogout = () => {
+        localStorage.removeItem('token'); // localStorage 초기화
+        localStorage.removeItem('authUser'); // localStorage 초기화
+        setToken(null);
+    }
+
+    const [name, setName] = useState('');
+
+    useEffect(() => {
+        const authUser = localStorage.getItem('authUser');
+        if (authUser) {
+            const parsedUser = JSON.parse(authUser); // 문자열을 객체로 변환
+            setName(parsedUser.name); // 객체에서 name 속성 추출
+        }
+    }, []); // 컴포넌트 마운트 시 한 번만 실행
+
     /*---일반 메소드 --------------------------------------------*/
 
     /*---생명주기 + 이벤트 관련 메소드 ----------------------*/
@@ -31,7 +49,7 @@ const LoginForm = () => {
         const userVo = { id, password };
         axios({
             method: 'post', // HTTP POST 요청 방식 사용
-            url: `http://localhost:9000/api/mysites/login`, // 데이터를 가져올 API URL
+            url: `http://localhost:9000/api/users/login`, // 데이터를 가져올 API URL
             headers: { "Content-Type": "application/json; charset=utf-8" }, // 서버에 보낼 때 JSON 형식으로 전송
             data: userVo,
             responseType: 'json' // 서버로부터 JSON 데이터를 응답받음
@@ -39,6 +57,11 @@ const LoginForm = () => {
             .then(response => {
                 console.log("로그인 완료:", response.data); // 로그인 완료 메시지 출력
                 if (response.data.result === "success") {
+                    const token = response.headers['authorization'].split(' ')[1]; // Bearer
+                    localStorage.setItem("token", token); // JWT 토큰 저장
+                    localStorage.setItem("authUser", JSON.stringify(response.data.apiData)); // 사용자 정보도 함께 저장
+                    setToken(token);
+                    
                     navigate("/"); // 성공 시 리다이렉트
                 } else {
                     // 실패 시 처리
@@ -53,7 +76,7 @@ const LoginForm = () => {
     return (
         <>
             <div id="wrap">
-                <Header />
+                <Header token={token} name={name} handleLogout={handleLogout}/>
 
                 <div id="container" className="clearfix">
                     <div id="aside">
