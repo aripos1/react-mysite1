@@ -1,43 +1,82 @@
-//import 라이브러리
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-//import 컴포넌트
-import Header from '../include/Header';
+import axios from 'axios';
 import Footer from '../include/Footer';
-//import css
+import Header from '../include/Header';
 import '../../assets/css/main.css';
 import '../../assets/css/user.css';
 
 const ModifyForm = () => {
 
     const [token, setToken] = useState(localStorage.getItem('token'));
-    const [name, setName] = useState('');
+    const [name, setName] = useState(''); // 이름 상태
+    const [id, setId] = useState(''); // 아이디 상태
+    const [password, setPw] = useState('');
+    const [gender, setGender] = useState('');
     const navigate = useNavigate();
-    /*---일반 메소드 --------------------------------------------*/
 
-    /*---생명주기 + 이벤트 관련 메소드 ----------------------*/
+    /*--- 생명주기 + 이벤트 관련 메소드 ----------------------*/
 
     useEffect(() => {
-        const authUser = localStorage.getItem('authUser');
-        if (authUser) {
-            const parsedUser = JSON.parse(authUser);
-            setName(parsedUser.name);
-        }
-    }, []);
+        // 서버로부터 사용자 정보를 가져옴
+        axios({
+            method: 'get',
+            url: 'http://localhost:9000/api/users/me',
+            headers: { "Authorization": `Bearer ${token}` },
+            responseType: 'json'
+        }).then(response => {
+            const userData = response.data.apiData;
+            setName(userData.name);
+            setId(userData.id);
+            setGender(userData.gender);
+        }).catch(error => {
+            console.error('사용자 정보를 가져오는 중 오류 발생:', error);
+        });
+    }, [token]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('authUser');
-        setToken(null);
-        setName('');
-        navigate('/'); // 로그아웃 후 메인으로 리다이렉트
+    /*--- 일반 메소드 --------------------------------------------*/
+
+    const handlePw = (e) => {
+        setPw(e.target.value);
+    };
+    const handleName = (e) => {
+        setName(e.target.value);
+    };
+    const handleGender = (e) => {
+        setGender(e.target.value);
+    };
+
+    const handleUpdate = (e) => {
+        e.preventDefault();
+        const userVo = {
+            id: id,
+            password: password,
+            name: name,
+            gender: gender,
+        };
+        axios({
+            method: 'put',
+            url: `http://localhost:9000/api/users/me`,
+            headers: { "Content-Type": "application/json; charset=utf-8" },
+            data: userVo,
+            responseType: 'json'
+        }).then(response => {
+            if (response.data.result === "success") {
+                const authUser = response.data.apiData;
+                localStorage.setItem("authUser", JSON.stringify(authUser)); 
+                navigate("/"); // 성공 시 리다이렉트
+            } else {
+                console.error("회원정보 수정 실패:", response.data.message);
+            }
+        }).catch(error => {
+            console.error("회원정보 수정 중 오류 발생:", error);
+        });
     };
 
     return (
         <>
             <div id="wrap">
-                <Header token={token} name={name} handleLogout={handleLogout} />
+                <Header />
 
                 <div id="container" className="clearfix">
                     <div id="aside">
@@ -48,7 +87,6 @@ const ModifyForm = () => {
                             <li>회원가입</li>
                         </ul>
                     </div>
-                    {/* //aside */}
 
                     <div id="content">
                         <div id="content-head">
@@ -62,40 +100,39 @@ const ModifyForm = () => {
                             </div>
                             <div className="clear"></div>
                         </div>
-                        {/* //content-head */}
 
                         <div id="user">
                             <div id="modifyForm">
-                                <form action="" method="">
-                                    {/* 아이디 */}
+                                <form onSubmit={handleUpdate}>
                                     <div className="form-group">
                                         <label className="form-text" htmlFor="input-uid">아이디</label>
-                                        <span className="text-large bold">userid</span>
+                                        <span className="text-large bold">{id}</span>
                                     </div>
 
-                                    {/* 비밀번호 */}
                                     <div className="form-group">
                                         <label className="form-text" htmlFor="input-pass">패스워드</label>
                                         <input
                                             type="password"
                                             id="input-pass"
                                             name="password"
+                                            value={password}
                                             placeholder="비밀번호를 입력하세요"
+                                            onChange={handlePw}
                                         />
                                     </div>
 
-                                    {/* 이름 */}
                                     <div className="form-group">
                                         <label className="form-text" htmlFor="input-name">이름</label>
                                         <input
                                             type="text"
                                             id="input-name"
                                             name="name"
+                                            value={name}
                                             placeholder="이름을 입력하세요"
+                                            onChange={handleName}
                                         />
                                     </div>
 
-                                    {/* 성별 */}
                                     <div className="form-group">
                                         <span className="form-text">성별</span>
                                         <label htmlFor="rdo-male">남</label>
@@ -104,6 +141,8 @@ const ModifyForm = () => {
                                             id="rdo-male"
                                             name="gender"
                                             value="male"
+                                            onChange={handleGender}
+                                            checked={gender === "male"}
                                         />
                                         <label htmlFor="rdo-female">여</label>
                                         <input
@@ -111,26 +150,21 @@ const ModifyForm = () => {
                                             id="rdo-female"
                                             name="gender"
                                             value="female"
+                                            onChange={handleGender}
+                                            checked={gender === "female"}
                                         />
                                     </div>
 
-                                    {/* 버튼영역 */}
                                     <div className="button-area">
                                         <button type="submit" id="btn-submit">회원정보수정</button>
                                     </div>
                                 </form>
                             </div>
-                            {/* //modifyForm */}
                         </div>
-                        {/* //user */}
                     </div>
-                    {/* //content  */}
                 </div>
-                {/* //container  */}
                 <Footer />
-                {/* //footer */}
             </div>
-            {/* //wrap */}
         </>
     );
 };

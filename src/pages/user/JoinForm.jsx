@@ -62,6 +62,34 @@ const JoinForm = () => {
             });
     };
 
+    const handleDuplicate = (e) => {
+        e.preventDefault();
+        const userId = {
+            id: id
+        }
+        axios({
+            method: 'get', // HTTP POST 요청 방식 사용
+            url: `http://localhost:9000/api/users/duplicate`, // 데이터를 가져올 API URL
+            headers: { "Content-Type": "application/json; charset=utf-8" }, // 서버에 보낼 때 JSON 형식으로 전송
+            params: userId,
+            responseType: 'json' // 서버로부터 JSON 데이터를 응답받음
+        })
+            .then(response => {
+                if (response.data.result === "success") {
+                    alert("사용할수 있는 아이디 입니다.");
+                } else {
+                    alert("사용할수 없는 아이디 입니다.");
+                }
+            })
+            .catch(error => {
+                console.error("중복 체크 실패:", error); // 오류 메시지 출력
+            });
+    }
+
+
+
+
+
     return (
         <>
             <div id="wrap">
@@ -101,7 +129,7 @@ const JoinForm = () => {
                                     <div className="form-group">
                                         <label className="form-text" htmlFor="input-uid">아이디</label>
                                         <input type="text" id="input-uid" name="id" placeholder="아이디를 입력하세요" onChange={handleId} value={id} />
-                                        <button type="button">중복체크</button>
+                                        <button type="button" value={id} onClick={handleDuplicate}>중복체크</button>
                                     </div>
 
                                     {/* <!-- 비밀번호 --> */}
