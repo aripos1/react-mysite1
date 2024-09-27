@@ -16,7 +16,7 @@ const LoginForm = () => {
     const navigate = useNavigate();
     const [id, setId] = useState('');
     const [password, setPw] = useState('');
-    const [token, setToken] = useState(localStorage.getItem('token'));
+  
     /*---일반 메소드 --------------------------------------------*/
 
     /*---생명주기 + 이벤트 관련 메소드 ----------------------*/
@@ -43,7 +43,7 @@ const LoginForm = () => {
                     const token = response.headers['authorization'].split(' ')[1]; // Bearer
                     localStorage.setItem("token", token); // JWT 토큰 저장
                     localStorage.setItem("authUser", JSON.stringify(response.data.apiData)); // 사용자 정보도 함께 저장
-                    setToken(token);
+                    
                     navigate("/"); // 성공 시 리다이렉트
                 } else {
                     // 실패 시 처리

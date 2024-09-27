@@ -8,7 +8,7 @@ import '../../assets/css/user.css';
 
 const ModifyForm = () => {
 
-    const [token, setToken] = useState(localStorage.getItem('token'));
+   
     const [name, setName] = useState(''); // 이름 상태
     const [id, setId] = useState(''); // 아이디 상태
     const [password, setPw] = useState('');
@@ -18,6 +18,7 @@ const ModifyForm = () => {
     /*--- 생명주기 + 이벤트 관련 메소드 ----------------------*/
 
     useEffect(() => {
+        const token = localStorage.getItem('token'); 
         // 서버로부터 사용자 정보를 가져옴
         axios({
             method: 'get',
@@ -32,7 +33,7 @@ const ModifyForm = () => {
         }).catch(error => {
             console.error('사용자 정보를 가져오는 중 오류 발생:', error);
         });
-    }, [token]);
+    }, []);
 
     /*--- 일반 메소드 --------------------------------------------*/
 

@@ -67,7 +67,7 @@ const AddList = () => {
                             <td>{guest.no}</td>
                             <td>{guest.name}</td>
                             <td>{guest.date}</td>
-                            <td> <Link to={`/deleteform/${guest.no}`}>삭제</Link></td>
+                            <td> <Link to={`/guestbook/deleteform/${guest.no}`}>삭제</Link></td>
                         </tr>
                         <tr>
                             <td colSpan="4"> {guest.content} </td>

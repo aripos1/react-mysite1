@@ -1,30 +1,57 @@
 //import 라이브러리
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'; // React Router에서 URL 파라미터 추출 및 페이지 이동 기능 사용
 //import 컴포넌트
-import Header from '../include/Header';
+import axios from 'axios';
 import Footer from '../include/Footer';
+import Header from '../include/Header';
 //import css
-import '../../assets/css/main.css';
 import '../../assets/css/board.css';
+import '../../assets/css/main.css';
 const List = () => {
     /*---상태관리 변수들(값이 변화면 화면 랜더링) ----------*/
-
+    const [boardList, setBoardList] = useState([]);
     /*---일반 메소드 --------------------------------------------*/
+    useEffect(() => {
+        axios.get('http://localhost:9000/api/boardlists')
+            .then(response => {
+                setBoardList(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, []);
+    const renderBoardList = () => {
+        return boardList.map((boardVo) => (
+            <div>
+                <tbody>
+                    <tr>
+                        <td>{boardVo.no}</td>
+                        <td className="text-left"><Link to="">게시판 게시글입니다.</Link></td>
+                        <td>{boardVo.name}</td>
+                        <td>1232</td>
+                        <td>2020-12-23</td>
+                        <td><a href="">[삭제]</a></td>
+                    </tr>
+                </tbody>
+                <br />
+            </div>
+        ));
+    };
 
     /*---생명주기 + 이벤트 관련 메소드 ----------------------*/
     return (
         <>
-           <div id="wrap">
+            <div id="wrap">
 
-                <Header/>
+                <Header />
 
                 <div id="container" className="clearfix">
                     <div id="aside">
                         <h2>게시판</h2>
                         <ul>
-                            <li><a href="">일반게시판</a></li>
-                            <li><a href="">댓글게시판</a></li>
+                            <li><Link to="">일반게시판</Link></li>
+                            <li><Link to="">댓글게시판</Link></li>
                         </ul>
                     </div>
                     {/* //aside */}
@@ -63,50 +90,9 @@ const List = () => {
                                             <th>관리</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>123</td>
-                                            <td className="text-left"><a href="#">게시판 게시글입니다.</a></td>
-                                            <td>정우성</td>
-                                            <td>1232</td>
-                                            <td>2020-12-23</td>
-                                            <td><a href="">[삭제]</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td>123</td>
-                                            <td className="text-left"><a href="#">게시판 게시글입니다.</a></td>
-                                            <td>정우성</td>
-                                            <td>1232</td>
-                                            <td>2020-12-23</td>
-                                            <td><a href="">[삭제]</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td>123</td>
-                                            <td className="text-left"><a href="#">게시판 게시글입니다.</a></td>
-                                            <td>정우성</td>
-                                            <td>1232</td>
-                                            <td>2020-12-23</td>
-                                            <td><a href="">[삭제]</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td>123</td>
-                                            <td className="text-left"><a href="#">게시판 게시글입니다.</a></td>
-                                            <td>정우성</td>
-                                            <td>1232</td>
-                                            <td>2020-12-23</td>
-                                            <td><a href="">[삭제]</a></td>
-                                        </tr>
-                                        <tr className="last">
-                                            <td>123</td>
-                                            <td className="text-left"><a href="#">게시판 게시글입니다.</a></td>
-                                            <td>정우성</td>
-                                            <td>1232</td>
-                                            <td>2020-12-23</td>
-                                            <td><a href="">[삭제]</a></td>
-                                        </tr>
-                                    </tbody>
+                                    {renderBoardList()}
                                 </table>
-                    
+
                                 <div id="paging">
                                     <ul>
                                         <li><a href="">◀</a></li>
@@ -122,11 +108,11 @@ const List = () => {
                                         <li><a href="">10</a></li>
                                         <li><a href="">▶</a></li>
                                     </ul>
-                                    
+
                                     <div className="clear"></div>
                                 </div>
-                                <a id="btn_write" href="">글쓰기</a>
-                            
+                                <a id="btn_write">글쓰기</a>
+
                             </div>
                             {/* //list */}
                         </div>
@@ -136,7 +122,7 @@ const List = () => {
 
                 </div>
                 {/* //container */}
-            <Footer/>
+                <Footer />
                 {/* //footer */}
             </div>
         </>
