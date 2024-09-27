@@ -10,6 +10,9 @@ import BoardList from './pages/board/List';
 import Read from './pages/board/Read';
 import BoardModifyForm from './pages/board/ModifyForm';
 import WriteForm from './pages/board/WriteForm';
+import Form from './pages/attach/Form';
+import Result from './pages/attach/Result';
+import Form2 from './pages/attach/Form2';
 
 function App() {
   return (
@@ -27,10 +30,13 @@ function App() {
           <Route path='/board/read' element={<Read />} />
           <Route path='/board/modifyform' element={<BoardModifyForm />} />
           <Route path='/board/writeform' element={<WriteForm />} />
+          <Route path='/attach/form' element={<Form />} />
+          <Route path='/attach/form2' element={<Form2 />} />
+          <Route path='/attach/result' element={<Result />} />
         </Routes>
       </BrowserRouter>
     </div>
   );
-}
+} 
 
 export default App;
