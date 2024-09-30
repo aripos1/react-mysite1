@@ -25,7 +25,7 @@ const Form = () => {
 
         axios({
             method: 'post', // put, post, delete
-            url: `http://localhost:9000/api/attachs`,
+            url: `${process.env.REACT_APP_API_URL}/api/attachs`,
 
             //get delete
             // headers: { "Content-Type": "application/json; charset=utf-8" }, // post put

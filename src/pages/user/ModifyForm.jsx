@@ -22,7 +22,7 @@ const ModifyForm = () => {
         // 서버로부터 사용자 정보를 가져옴
         axios({
             method: 'get',
-            url: 'http://localhost:9000/api/users/me',
+            url: `${process.env.REACT_APP_API_URL}/api/users/me`,
             headers: { "Authorization": `Bearer ${token}` },
             responseType: 'json'
         }).then(response => {
@@ -57,7 +57,7 @@ const ModifyForm = () => {
         };
         axios({
             method: 'put',
-            url: `http://localhost:9000/api/users/me`,
+            url: `${process.env.REACT_APP_API_URL}/api/users/me`,
             headers: { "Content-Type": "application/json; charset=utf-8" },
             data: userVo,
             responseType: 'json'

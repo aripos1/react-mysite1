@@ -14,7 +14,7 @@ const DeleteForm = () => {
     const [password, setPassword] = useState(''); // 비밀번호 상태 추가
 
     useEffect(() => {
-        axios.get(`http://localhost:9000/api/guestbooks/${no}`) // 서버에서 해당하는 데이터를 요청
+        axios.get(`${process.env.REACT_APP_API_URL}/api/guestbooks/${no}`) // 서버에서 해당하는 데이터를 요청
             .then(response => {
                 console.log(response.data); // 데이터 로드 후 콘솔에 출력
             })
@@ -28,7 +28,7 @@ const DeleteForm = () => {
         e.preventDefault(); // 기본 동작을 막음
 
         // 서버로 비밀번호와 함께 삭제 요청 보내기
-        axios.delete(`http://localhost:9000/api/guestbooks/${no}`, {
+        axios.delete(`${process.env.REACT_APP_API_URL}/api/guestbooks/${no}`, {
             data: { password } // Request Body로 비밀번호 전송
         })
             .then(response => {

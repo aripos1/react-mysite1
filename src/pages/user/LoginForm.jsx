@@ -32,7 +32,7 @@ const LoginForm = () => {
         const userVo = { id, password };
         axios({
             method: 'post', // HTTP POST 요청 방식 사용
-            url: `http://localhost:9000/api/users/login`, // 데이터를 가져올 API URL
+            url: `${process.env.REACT_APP_API_URL}/api/users/login`, // 데이터를 가져올 API URL
             headers: { "Content-Type": "application/json; charset=utf-8" }, // 서버에 보낼 때 JSON 형식으로 전송
             data: userVo,
             responseType: 'json' // 서버로부터 JSON 데이터를 응답받음

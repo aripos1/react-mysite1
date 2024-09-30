@@ -13,7 +13,7 @@ const List = () => {
     const [boardList, setBoardList] = useState([]);
     /*---일반 메소드 --------------------------------------------*/
     useEffect(() => {
-        axios.get('http://localhost:9000/api/boardlists')
+        axios.get(`${process.env.REACT_APP_API_URL}/api/boardlists`)
             .then(response => {
                 setBoardList(response.data);
             })

@@ -20,14 +20,14 @@ const AddList = () => {
     const handleContentChange = (e) => setContent(e.target.value);
 
     useEffect(() => {
-        axios.get('http://localhost:9000/api/guestbooks')
+        axios.get(`${process.env.REACT_APP_API_URL}/api/guestbooks`)
             .then(response => {
                 setGuestList(response.data);
             })
             .catch(error => {
                 console.log(error);
             });
-    }, []);
+    }, [guestList]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -38,12 +38,11 @@ const AddList = () => {
             'content': content
         };
 
-        axios.post('http://localhost:9000/api/guestbooks', guestVo)
+
+        axios.post(`${process.env.REACT_APP_API_URL}/api/guestbooks`, guestVo)
             .then(response => {
-                axios.get('http://localhost:9000/api/guestbooks')
-                    .then(response => {
-                        setGuestList(response.data);
-                    });
+                console.log(response.data); // 응답 데이터 확인
+                setGuestList([...guestList, response.data]);
                 setName('');
                 setPw('');
                 setContent('');
@@ -52,6 +51,7 @@ const AddList = () => {
                 console.log(error);
             });
     }
+
     const renderGuestList = () => {
         return guestList.map((guest) => (
             <div key={guest.no}>
